@@ -1,6 +1,6 @@
 # Benchmarks
 
-Performance benchmarks for the Mifos MCP Server (Go) using Go's standard `testing.B` framework.
+Performance benchmarks for the mapene-mcp server (Go) using Go's standard `testing.B` framework.
 
 ## What is Benchmarked
 

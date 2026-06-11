@@ -17,7 +17,7 @@ type MifosMcpServer struct {
 }
 
 func NewMifosMcpServer(fineractClient *adapter.FineractClient) *MifosMcpServer {
-	appServer := mcpserver.NewMCPServer("mapene-mcp", "1.0.0-blackswan")
+	appServer := mcpserver.NewMCPServer(ProductName, ProductVersion)
 
 	registry := &tools.Registry{
 		Server:   appServer,

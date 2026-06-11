@@ -1,6 +1,14 @@
-# Mifos MCP - Model Context Protocol (MCP) 
+# mapene-mcp — Model Context Protocol (MCP) server
 
-This project provides Model Context Protocol (MCP) for the Mifos X Ecosystem, enabling AI agents to access financial data and operations. 
+> **mapene-mcp** is a **Black Swan** product (© 2026 BSAi Global Limited),
+> built on the Mifos Initiative [`mcp-mifosx`](https://github.com/openMF/mcp-mifosx)
+> base (Mozilla Public License v2.0). It powers the **Mapene** web application.
+> See [`go/NOTICE`](./go/NOTICE) for attribution and licensing.
+
+This project provides a Model Context Protocol (MCP) server over the **Apache
+Fineract** banking backend, enabling AI agents to access financial data and
+operations. The **Go** implementation under [`go/`](./go) is the one Black Swan
+builds and deploys; see [`go/README.md`](./go/README.md).
 
 Implementations are available in:
 - **Go (Native)** — 102 typed tools (high-performance, cloud-native with SSE/Stdio).
@@ -12,15 +20,15 @@ Implementations are available in:
 
 ## Architecture Overview
 
-The Mifos MCP Server acts as a standalone, stateless integration tier that bridges any AI assistant or agent framework to the **Apache Fineract** banking backend.
+The mapene-mcp server acts as a standalone, stateless integration tier that bridges any AI assistant or agent framework to the **Apache Fineract** banking backend.
 
 ```text
 ┌──────────────────────────────────────────────┐
-│            Apache Fineract / Mifos X          │
+│               Apache Fineract                 │
 └───────────────────────┬──────────────────────┘
                         │ REST API
 ┌───────────────────────────────▼───────────────────────────────┐
-│                 mcp-mifosx (Primary Repo)                     │
+│              mapene-mcp (on the mcp-mifosx base)              │
 │                                                               │
 │  ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐  │
 │  │   /go (Native)  │ │ /java (Quarkus) │ │/python (FastMCP)│ │  /rust (Tokio)  │  │
@@ -33,7 +41,7 @@ The Mifos MCP Server acts as a standalone, stateless integration tier that bridg
                         │ MCP Protocol (stdio / SSE)
           ┌─────────────┼──────────────┐
           ▼             ▼              ▼
-    Mifos X WebApp   Claude Code     n8n / Custom
+    Mapene WebApp    Claude Code     n8n / Custom
     AI Assistant     (claude.ai)     Workflow Agent
     (your client)   (external)       (your client)
 ```
@@ -238,6 +246,12 @@ npx @modelcontextprotocol/inspector python python/mcp_server.py
 
 ## Contact & Community
 
+mapene-mcp is a Black Swan product. For Black Swan / Mapene enquiries, contact
+legal@bsa.ai.
+
+This product is built on the Mifos Initiative `mcp-mifosx` base (MPL-2.0).
+Upstream project resources:
+
 - Mifos Community: https://mifos.org
-- Mifos MCP (Docker): https://hub.docker.com/r/openmf/mifos-mcp
-- Chatbot Demo: https://ai.mifos.community
+- Upstream MCP (Docker): https://hub.docker.com/r/openmf/mifos-mcp
+- Upstream Chatbot Demo: https://ai.mifos.community

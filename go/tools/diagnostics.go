@@ -41,7 +41,7 @@ func (r *Registry) RegisterDiagnosticTools() {
 				}
 				duration := time.Since(start)
 
-				return mcp.NewToolResultText(fmt.Sprintf("Mifos X Fineract Latency: %v", duration)), nil
+				return mcp.NewToolResultText(fmt.Sprintf("Fineract Latency: %v", duration)), nil
 			},
 		},
 	})

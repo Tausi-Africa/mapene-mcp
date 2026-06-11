@@ -41,7 +41,7 @@ func (s *MifosHTTPServer) Serve() error {
 
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"status": "UP", "service": "mapene-mcp", "version": "1.0.0-blackswan"})
+		json.NewEncoder(w).Encode(map[string]string{"status": "UP", "service": ProductName, "version": ProductVersion})
 	})
 
 	for _, def := range s.McpServer.Registry.ToolDefs {
@@ -92,7 +92,7 @@ func (s *MifosHTTPServer) Serve() error {
 		mux.ServeHTTP(w, r)
 	})
 
-	log.Printf("Starting mapene-mcp (Black Swan) on http://localhost:%s", s.Port)
+	log.Printf("Starting %s (Black Swan) on http://localhost:%s", ProductName, s.Port)
 	log.Printf("SSE Endpoint: http://localhost:%s/sse", s.Port)
 	log.Printf("REST API Base: http://localhost:%s/api/", s.Port)
 

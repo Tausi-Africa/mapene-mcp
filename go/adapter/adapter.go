@@ -48,6 +48,12 @@ func New() *FineractClient {
 		username = "mifos"
 	}
 
+	// Security: verify Fineract's TLS certificate by DEFAULT. Only skip
+	// verification when MCP_INSECURE_TLS=true (e.g. local dev against a
+	// self-signed Fineract). In production, leave it unset and use a trusted
+	// certificate so the connection cannot be MITM'd.
+	insecureTLS := os.Getenv("MCP_INSECURE_TLS") == "true"
+
 	return &FineractClient{
 		BaseURL:  strings.TrimRight(baseURL, "/"),
 		TenantID: tenantID,
@@ -56,7 +62,10 @@ func New() *FineractClient {
 		HTTP: &http.Client{
 			Timeout: 45 * time.Second,
 			Transport: &http.Transport{
-				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+				TLSClientConfig:     &tls.Config{InsecureSkipVerify: insecureTLS},
+				MaxIdleConns:        100,
+				MaxIdleConnsPerHost: 20,
+				IdleConnTimeout:     90 * time.Second,
 			},
 		},
 	}
