@@ -5,10 +5,12 @@
 package server
 
 import (
+	"crypto/subtle"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -39,7 +41,7 @@ func (s *MifosHTTPServer) Serve() error {
 
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"status": "UP", "version": "1.0.0-go"})
+		json.NewEncoder(w).Encode(map[string]string{"status": "UP", "service": "mapene-mcp", "version": "1.0.0-blackswan"})
 	})
 
 	for _, def := range s.McpServer.Registry.ToolDefs {
@@ -50,22 +52,47 @@ func (s *MifosHTTPServer) Serve() error {
 		})
 	}
 
+	// Security: this HTTP/SSE surface is an authenticated gateway to Fineract
+	// using the configured service credentials. It must NOT be an open proxy.
+	authToken := os.Getenv("MCP_AUTH_TOKEN")
+	if authToken == "" {
+		log.Println("[SECURITY] MCP_AUTH_TOKEN is not set — refusing all requests except /health. " +
+			"Set MCP_AUTH_TOKEN and send 'Authorization: Bearer <token>' to enable the API.")
+	}
+	// CORS: same-origin by default. Set MCP_ALLOWED_ORIGIN to opt a specific origin in.
+	allowedOrigin := os.Getenv("MCP_ALLOWED_ORIGIN")
+
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("[HTTP] %s %s from %s", r.Method, r.URL.Path, r.RemoteAddr)
 
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		if allowedOrigin != "" {
+			w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+			w.Header().Set("Vary", "Origin")
+		}
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-Mifos-Tenant-Id")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Mifos-Tenant-Id")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
 
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
 
+		// /health is the only unauthenticated route.
+		if r.URL.Path != "/health" {
+			provided := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+			if authToken == "" || subtle.ConstantTimeCompare([]byte(provided), []byte(authToken)) != 1 {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusUnauthorized)
+				json.NewEncoder(w).Encode(map[string]string{"error": "unauthorized"})
+				return
+			}
+		}
+
 		mux.ServeHTTP(w, r)
 	})
 
-	log.Printf("Starting Headless MCP Server on http://localhost:%s", s.Port)
+	log.Printf("Starting mapene-mcp (Black Swan) on http://localhost:%s", s.Port)
 	log.Printf("SSE Endpoint: http://localhost:%s/sse", s.Port)
 	log.Printf("REST API Base: http://localhost:%s/api/", s.Port)
 

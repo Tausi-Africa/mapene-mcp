@@ -1,7 +1,8 @@
-// Copyright since 2025 Mifos Initiative
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// mapene-mcp — a Black Swan product. © 2026 BSAi Global Limited.
+// Built on the Mifos Initiative mcp-mifosx base, which is licensed under the
+// Mozilla Public License, v. 2.0 (http://mozilla.org/MPL/2.0/); that license is
+// retained for the base. Black Swan modifications and the mapene-mcp / Black
+// Swan / Mapene names and marks are reserved. See NOTICE.
 package server
 
 import (
@@ -16,7 +17,7 @@ type MifosMcpServer struct {
 }
 
 func NewMifosMcpServer(fineractClient *adapter.FineractClient) *MifosMcpServer {
-	appServer := mcpserver.NewMCPServer("Mifos-Banking-Agent-Go", "1.0.0")
+	appServer := mcpserver.NewMCPServer("mapene-mcp", "1.0.0-blackswan")
 
 	registry := &tools.Registry{
 		Server:   appServer,

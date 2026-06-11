@@ -1,0 +1,31 @@
+mapene-mcp — a Black Swan product
+© 2026 BSAi Global Limited ("Black Swan"). All Black Swan rights reserved.
+
+mapene-mcp is Black Swan's distribution of a Model Context Protocol server that
+exposes Apache Fineract banking operations as agent tools, used by the Mapene
+web application.
+
+BASE / UPSTREAM
+This product is built on the "mcp-mifosx" project by the Mifos Initiative, which
+is licensed under the Mozilla Public License, Version 2.0 (MPL-2.0). The MPL-2.0
+license and its notices are retained for the upstream base code, and a copy is
+available at http://mozilla.org/MPL/2.0/. Files derived from the base remain
+governed by the MPL-2.0 to the extent required by that license.
+
+BLACK SWAN MODIFICATIONS
+Modifications made by Black Swan (including security hardening — fail-closed
+bearer-token authentication and tightened CORS on the HTTP/SSE surface — and
+product rebranding) are © 2026 BSAi Global Limited. Where permitted, these are
+provided under Black Swan's commercial terms (see the Mapene LICENSE).
+
+TRADEMARKS
+"Black Swan", "Mapene", and "mapene-mcp", together with associated logos and
+marks, are trademarks of Black Swan and are not licensed by the MPL-2.0. No
+trademark rights are granted.
+
+SECURITY
+Run mapene-mcp on a private network only. Set MCP_AUTH_TOKEN to require
+`Authorization: Bearer <token>` on all routes except /health (the server is
+fail-closed when the token is unset). Configure MCP_ALLOWED_ORIGIN for CORS.
+
+Contact: legal@bsa.ai
